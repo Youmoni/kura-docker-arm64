@@ -13,12 +13,17 @@ GLUSTER_MOUNT=/mnt/kura
 
 if [ -d $GLUSTER_MOUNT ]; then
 	echo "Using gluster on $GLUSTER_MOUNT ..."
-	for dir in data user; do
-		if [ ! -d $GLUSTER_MOUNT/$dir ]; then
+	for dir in data user packages; do
+		if [ ! -d $GLUSTER_MOUNT/$dir  ]; then
+		   if [ -d $KURA_PATH/$dir ]; then
 			echo "Initial copy of $GLUSTER_MOUNT/$dir to $GLUSTER_MOUNT/$dir ..."
 			cp -ar $KURA_PATH/$dir $GLUSTER_MOUNT
+		   else
+			mkdir $GLUSTER_MOUNT/$dir
+		   fi
 		fi
-		mv $KURA_PATH/$dir $KURA_PATH/$dir.bak
+		#mv $KURA_PATH/$dir $KURA_PATH/$dir.bak
+		rm -Rf $KURA_PATH/$dir
 		ln -s $GLUSTER_MOUNT/$dir $KURA_PATH/$dir
 	done
 	echo "Set up of gluster on $GLUSTER_MOUNT done"
